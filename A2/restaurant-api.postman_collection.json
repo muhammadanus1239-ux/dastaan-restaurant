@@ -1,0 +1,456 @@
+{
+  "info": {
+    "_postman_id": "a6f2c330-dastaan-api-collection",
+    "name": "DASTAAN Restaurant API",
+    "description": "Postman Collection for DASTAAN Restaurant App (Assignment 2)",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "BASE_URL",
+      "value": "http://localhost:5000",
+      "type": "string"
+    },
+    {
+      "key": "menu_item_id",
+      "value": "651234567890abcdef123456",
+      "type": "string"
+    },
+    {
+      "key": "customer_token",
+      "value": "your_customer_jwt_token_here",
+      "type": "string"
+    },
+    {
+      "key": "manager_token",
+      "value": "your_manager_jwt_token_here",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "Health Check",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{BASE_URL}}/api/health",
+          "host": ["{{BASE_URL}}"],
+          "path": ["api", "health"]
+        }
+      }
+    },
+    {
+      "name": "Auth - Register Customer (201 Created)",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"name\": \"New Customer\",\n  \"email\": \"newcustomer@dastaan.com\",\n  \"password\": \"Customer123\",\n  \"role\": \"customer\"\n}"
+        },
+        "url": {
+          "raw": "{{BASE_URL}}/api/auth/register",
+          "host": ["{{BASE_URL}}"],
+          "path": ["api", "auth", "register"]
+        }
+      }
+    },
+    {
+      "name": "Auth - Register Duplicate Email (409 Conflict)",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"name\": \"Ahmed Khan\",\n  \"email\": \"customer@dastaan.com\",\n  \"password\": \"Customer123\",\n  \"role\": \"customer\"\n}"
+        },
+        "url": {
+          "raw": "{{BASE_URL}}/api/auth/register",
+          "host": ["{{BASE_URL}}"],
+          "path": ["api", "auth", "register"]
+        }
+      }
+    },
+    {
+      "name": "Auth - Login Customer (200 OK)",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"email\": \"customer@dastaan.com\",\n  \"password\": \"Customer123\"\n}"
+        },
+        "url": {
+          "raw": "{{BASE_URL}}/api/auth/login",
+          "host": ["{{BASE_URL}}"],
+          "path": ["api", "auth", "login"]
+        }
+      }
+    },
+    {
+      "name": "Auth - Login Manager (200 OK)",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"email\": \"manager@dastaan.com\",\n  \"password\": \"Manager123\"\n}"
+        },
+        "url": {
+          "raw": "{{BASE_URL}}/api/auth/login",
+          "host": ["{{BASE_URL}}"],
+          "path": ["api", "auth", "login"]
+        }
+      }
+    },
+    {
+      "name": "Auth - Get Current User Profile (200 OK)",
+      "request": {
+        "method": "GET",
+        "header": [
+          { "key": "Authorization", "value": "Bearer {{customer_token}}" }
+        ],
+        "url": {
+          "raw": "{{BASE_URL}}/api/auth/me",
+          "host": ["{{BASE_URL}}"],
+          "path": ["api", "auth", "me"]
+        }
+      }
+    },
+    {
+      "name": "A2 Q5 Screenshot 1: Add Item with No Token (401 Unauthorized)",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"name\": \"Unauthorized Item\",\n  \"description\": \"Item attempted without token\",\n  \"price\": 500,\n  \"category\": \"Starters\",\n  \"image\": \"https://example.com/item.jpg\"\n}"
+        },
+        "url": {
+          "raw": "{{BASE_URL}}/api/menu",
+          "host": ["{{BASE_URL}}"],
+          "path": ["api", "menu"]
+        }
+      }
+    },
+    {
+      "name": "A2 Q5 Screenshot 2: Add Item with Customer Token (403 Forbidden)",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" },
+          { "key": "Authorization", "value": "Bearer {{customer_token}}" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"name\": \"Customer Attempt Item\",\n  \"description\": \"Item attempted with customer token\",\n  \"price\": 500,\n  \"category\": \"Starters\",\n  \"image\": \"https://example.com/item.jpg\"\n}"
+        },
+        "url": {
+          "raw": "{{BASE_URL}}/api/menu",
+          "host": ["{{BASE_URL}}"],
+          "path": ["api", "menu"]
+        }
+      }
+    },
+    {
+      "name": "A2 Q5 Screenshot 3: Add Item with Manager Token (201 Created)",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" },
+          { "key": "Authorization", "value": "Bearer {{manager_token}}" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"name\": \"Royal Zafrani Kebab\",\n  \"description\": \"Created by manager with token\",\n  \"price\": 950,\n  \"category\": \"Starters\",\n  \"image\": \"https://images.unsplash.com/photo-1599488615731-7e5c2823ff28?w=800&q=80\",\n  \"isSpecial\": true,\n  \"isAvailable\": true\n}"
+        },
+        "url": {
+          "raw": "{{BASE_URL}}/api/menu",
+          "host": ["{{BASE_URL}}"],
+          "path": ["api", "menu"]
+        }
+      }
+    },
+    {
+      "name": "Menu - Get All Items",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{BASE_URL}}/api/menu",
+          "host": ["{{BASE_URL}}"],
+          "path": ["api", "menu"]
+        }
+      }
+    },
+    {
+      "name": "Menu - Filter by Category",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{BASE_URL}}/api/menu?category=Mains",
+          "host": ["{{BASE_URL}}"],
+          "path": ["api", "menu"],
+          "query": [
+            {
+              "key": "category",
+              "value": "Mains"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "Menu - Search by Name",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{BASE_URL}}/api/menu?search=Biryani",
+          "host": ["{{BASE_URL}}"],
+          "path": ["api", "menu"],
+          "query": [
+            {
+              "key": "search",
+              "value": "Biryani"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "Menu - Get Single Item by ID",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{BASE_URL}}/api/menu/{{menu_item_id}}",
+          "host": ["{{BASE_URL}}"],
+          "path": ["api", "menu", "{{menu_item_id}}"]
+        }
+      }
+    },
+    {
+      "name": "Menu - Create Item (201 Created)",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"name\": \"Zafrani Paneer Tikka\",\n  \"description\": \"Tandoor-charred cottage cheese in saffron yoghurt marinade\",\n  \"price\": 780,\n  \"category\": \"Starters\",\n  \"image\": \"https://images.unsplash.com/photo-1567188040759-fb8a883dc6d8?w=800&q=80\",\n  \"isSpecial\": true,\n  \"isAvailable\": true\n}"
+        },
+        "url": {
+          "raw": "{{BASE_URL}}/api/menu",
+          "host": ["{{BASE_URL}}"],
+          "path": ["api", "menu"]
+        }
+      }
+    },
+    {
+      "name": "Menu - Update Item (200 OK)",
+      "request": {
+        "method": "PUT",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"price\": 820,\n  \"isSpecial\": false\n}"
+        },
+        "url": {
+          "raw": "{{BASE_URL}}/api/menu/{{menu_item_id}}",
+          "host": ["{{BASE_URL}}"],
+          "path": ["api", "menu", "{{menu_item_id}}"]
+        }
+      }
+    },
+    {
+      "name": "Menu - Delete Item (200 OK)",
+      "request": {
+        "method": "DELETE",
+        "header": [],
+        "url": {
+          "raw": "{{BASE_URL}}/api/menu/{{menu_item_id}}",
+          "host": ["{{BASE_URL}}"],
+          "path": ["api", "menu", "{{menu_item_id}}"]
+        }
+      }
+    },
+    {
+      "name": "Fail 1 - Create Item with Missing Name (400 Bad Request)",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"description\": \"Item without a name field\",\n  \"price\": 500,\n  \"category\": \"Starters\",\n  \"image\": \"https://example.com/image.jpg\"\n}"
+        },
+        "url": {
+          "raw": "{{BASE_URL}}/api/menu",
+          "host": ["{{BASE_URL}}"],
+          "path": ["api", "menu"]
+        }
+      }
+    },
+    {
+      "name": "Fail 2 - Create Item with Negative Price (400 Bad Request)",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"name\": \"Invalid Price Dish\",\n  \"description\": \"Dish with negative price value\",\n  \"price\": -250,\n  \"category\": \"Starters\",\n  \"image\": \"https://example.com/image.jpg\"\n}"
+        },
+        "url": {
+          "raw": "{{BASE_URL}}/api/menu",
+          "host": ["{{BASE_URL}}"],
+          "path": ["api", "menu"]
+        }
+      }
+    },
+    {
+      "name": "Fail 3 - Get Item with Invalid ID Format (400 Bad Request)",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{BASE_URL}}/api/menu/not-a-valid-mongo-id",
+          "host": ["{{BASE_URL}}"],
+          "path": ["api", "menu", "not-a-valid-mongo-id"]
+        }
+      }
+    },
+    {
+      "name": "Fail 4 - Get Item Non-existent Valid ID (404 Not Found)",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{BASE_URL}}/api/menu/000000000000000000000000",
+          "host": ["{{BASE_URL}}"],
+          "path": ["api", "menu", "000000000000000000000000"]
+        }
+      }
+    },
+    {
+      "name": "A2 Q7 Test 1: Place Order (201 Created - Server Calculates Total)",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" },
+          { "key": "Authorization", "value": "Bearer {{customer_token}}" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"orderType\": \"Dine-in\",\n  \"table\": \"Table 3\",\n  \"promoCode\": \"WELCOME10\",\n  \"items\": [\n    {\n      \"name\": \"Special Chicken Dum Biryani\",\n      \"price\": 1350,\n      \"quantity\": 2,\n      \"note\": \"Extra saffron raita\"\n    },\n    {\n      \"name\": \"Royal Mint Lemonade\",\n      \"price\": 350,\n      \"quantity\": 2\n    }\n  ]\n}"
+        },
+        "url": {
+          "raw": "{{BASE_URL}}/api/orders",
+          "host": ["{{BASE_URL}}"],
+          "path": ["api", "orders"]
+        }
+      }
+    },
+    {
+      "name": "A2 Q7 Test 2: Manager Advance Status to Preparing (200 OK)",
+      "request": {
+        "method": "PATCH",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" },
+          { "key": "Authorization", "value": "Bearer {{manager_token}}" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"status\": \"Preparing\"\n}"
+        },
+        "url": {
+          "raw": "{{BASE_URL}}/api/orders/{{order_id}}/status",
+          "host": ["{{BASE_URL}}"],
+          "path": ["api", "orders", "{{order_id}}", "status"]
+        }
+      }
+    },
+    {
+      "name": "A2 Q7 Test 3: Customer Cancel Preparing Order (400 Bad Request - Must Fail)",
+      "request": {
+        "method": "PATCH",
+        "header": [
+          { "key": "Authorization", "value": "Bearer {{customer_token}}" }
+        ],
+        "url": {
+          "raw": "{{BASE_URL}}/api/orders/{{order_id}}/cancel",
+          "host": ["{{BASE_URL}}"],
+          "path": ["api", "orders", "{{order_id}}", "cancel"]
+        }
+      }
+    },
+    {
+      "name": "A2 Q7 Test 4: Book Table Reservation (201 Created)",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" },
+          { "key": "Authorization", "value": "Bearer {{customer_token}}" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"table\": \"65a000000000000000000013\",\n  \"date\": \"2026-10-25\",\n  \"timeSlot\": \"18:00\",\n  \"partySize\": 4,\n  \"name\": \"Hamza Tariq\",\n  \"phone\": \"0321-7654321\",\n  \"specialRequests\": \"Window view if available\"\n}"
+        },
+        "url": {
+          "raw": "{{BASE_URL}}/api/reservations",
+          "host": ["{{BASE_URL}}"],
+          "path": ["api", "reservations"]
+        }
+      }
+    },
+    {
+      "name": "A2 Q7 Test 5: Double Booking Attempt Same Slot (409 Conflict - Must Fail)",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" },
+          { "key": "Authorization", "value": "Bearer {{customer_token}}" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"table\": \"65a000000000000000000013\",\n  \"date\": \"2026-10-20\",\n  \"timeSlot\": \"19:00\",\n  \"partySize\": 4,\n  \"name\": \"Duplicate Attempter\",\n  \"phone\": \"0333-1122334\"\n}"
+        },
+        "url": {
+          "raw": "{{BASE_URL}}/api/reservations",
+          "host": ["{{BASE_URL}}"],
+          "path": ["api", "reservations"]
+        }
+      }
+    }
+  ]
+}

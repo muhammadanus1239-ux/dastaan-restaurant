@@ -1,0 +1,26 @@
+{
+  "expo": {
+    "name": "DASTAAN Restaurant",
+    "slug": "dastaan-restaurant",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "android": {
+      "package": "com.ghouri.dastaan"
+    },
+    "plugins": [
+      [
+        "expo-build-properties",
+        {
+          "android": {
+            "usesCleartextTraffic": true
+          }
+        }
+      ]
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "00068c51-bcbd-4177-bbcb-cb7dd77d45bf"
+      }
+    }
+  }
+}
