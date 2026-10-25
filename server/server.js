@@ -2,30 +2,43 @@ const express = require('express');
 const cors = require('cors');
 const dotenv = require('dotenv');
 const mongoose = require('mongoose');
-
 const path = require('path');
 
 const connectDB = require('./config/db');
 
-// Load environment variables from server/.env explicitly
+// Load environment variables from server/.env explicitly, with a fallback for root .env
 dotenv.config({ path: path.resolve(__dirname, '.env') });
+dotenv.config();
 
 const app = express();
-const PORT = process.env.BACKEND_PORT || 5000;
+const PORT = process.env.PORT || 5000;
 
-// Connect to MongoDB if MONGO_URI is defined, non-empty, and real (not template placeholder)
+// Connect to MongoDB if MONGO_URI is defined, non-empty, and real (not placeholder)
 const mongoUri = process.env.MONGO_URI;
-if (mongoUri && mongoUri.trim() !== '' && !mongoUri.includes('<username>') && !mongoUri.includes('cluster0.mongodb.net')) {
-  connectDB();
+if (mongoUri && mongoUri.trim() !== '' && !mongoUri.includes('<username>') && !mongoUri.includes('<password>')) {
+  connectDB()
+    .then(() => {
+      console.log('MongoDB bootstrap completed.');
+    })
+    .catch((error) => {
+      console.error('Database bootstrap failed:', error.message);
+    });
 } else {
   console.log('Notice: MONGO_URI is not configured with real cluster credentials yet.');
 }
 
 // Middleware
-app.use(cors());
+app.use(cors({
+  origin: true,
+  credentials: true
+}));
 app.use(express.json());
 
 // Routes
+app.get('/health', (req, res) => {
+  res.status(200).json({ status: 'ok' });
+});
+
 // 1. Health check route with MongoDB status (A2 Q2 & Task 2 requirement)
 app.get('/api/health', (req, res) => {
   const isMongoConnected = mongoose.connection.readyState === 1;

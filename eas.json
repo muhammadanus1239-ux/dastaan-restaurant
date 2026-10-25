@@ -9,14 +9,28 @@
       "distribution": "internal"
     },
     "preview": {
-      "distribution": "internal"
+      "distribution": "internal",
+      "android": {
+        "buildType": "apk"
+      },
+      "env": {
+        "EXPO_PUBLIC_API_URL": "https://YOUR-BACKEND.onrender.com"
+      }
     },
     "production": {
-      "autoIncrement": true
+      "autoIncrement": true,
+      "env": {
+        "EXPO_PUBLIC_API_URL": "https://YOUR-BACKEND.onrender.com"
+      }
     },
     "apk": {
       "distribution": "internal",
-      "android": { "buildType": "apk" }
+      "android": {
+        "buildType": "apk"
+      },
+      "env": {
+        "EXPO_PUBLIC_API_URL": "https://YOUR-BACKEND.onrender.com"
+      }
     }
   },
   "submit": {

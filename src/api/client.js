@@ -4,28 +4,14 @@
  * Manages BASE_URL configuration, JWT token injection, and unified error handling.
  */
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { Platform } from 'react-native';
-import Constants from 'expo-constants';
+import API_URL from '../config/api';
 
-const PORT = 5000;
-
-// Agar auto-detect na chale to yahan laptop ka IPv4 likh de, e.g. 'http://192.168.1.15:5000'
-const MANUAL_URL = 'http://192.168.18.81:5000';
-
-const getBaseUrl = () => {
-  if (MANUAL_URL) return MANUAL_URL;
-  if (process.env.EXPO_PUBLIC_API_URL) return process.env.EXPO_PUBLIC_API_URL;
-
-  // Expo Go: Metro ka host (laptop ka IP) automatically milta hai
-  const hostUri =
-    Constants.expoConfig?.hostUri ||
-    Constants.expoGoConfig?.debuggerHost ||
-    Constants.manifest2?.extra?.expoGo?.debuggerHost;
-  if (hostUri) return `http://${hostUri.split(':')[0]}:${PORT}`;
-
-  if (Platform.OS === 'android') return `http://10.0.2.2:${PORT}`;
-  return `http://localhost:${PORT}`;
+const normalizeApiUrl = (value) => {
+  const cleanValue = (value || 'https://YOUR-BACKEND.onrender.com').trim().replace(/\/+$/, '');
+  return cleanValue.startsWith('https://') ? cleanValue : cleanValue.replace(/^http:\/\//i, 'https://');
 };
+
+const getBaseUrl = () => normalizeApiUrl(API_URL);
 
 export const BASE_URL = getBaseUrl();
 console.log('API BASE_URL:', BASE_URL);
@@ -124,8 +110,12 @@ export async function apiRequest(endpoint, options = {}) {
     config.body = JSON.stringify(config.body);
   }
 
+  const controller = new AbortController();
+  const timeoutMs = options.timeoutMs ?? 60000;
+  const timeoutId = setTimeout(() => controller.abort(), timeoutMs);
+
   try {
-    const response = await fetch(url, config);
+    const response = await fetch(url, { ...config, signal: controller.signal });
     const data = await response.json().catch(() => null);
 
     if (!response.ok) {
@@ -138,7 +128,17 @@ export async function apiRequest(endpoint, options = {}) {
 
     return data;
   } catch (error) {
+    if (error?.name === 'AbortError') {
+      throw new Error('The server is waking up. Please wait about a minute and try again.');
+    }
+
+    if (error instanceof TypeError || error?.message === 'Network request failed') {
+      throw new Error('Network issue. Please check your connection and try again.');
+    }
+
     throw error;
+  } finally {
+    clearTimeout(timeoutId);
   }
 }
 

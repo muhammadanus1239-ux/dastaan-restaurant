@@ -55,8 +55,16 @@ const seedDatabase = async () => {
     }
 
     console.log('Connecting to MongoDB for seeding...');
-    await mongoose.connect(process.env.MONGO_URI);
-    console.log('MongoDB connected successfully.');
+    await mongoose.connect(process.env.MONGO_URI, {
+      serverSelectionTimeoutMS: 5000
+    })
+      .then((conn) => {
+        console.log(`MongoDB connected successfully: ${conn.connection.host}`);
+      })
+      .catch((error) => {
+        console.error('MongoDB connection error:', error.message);
+        throw error;
+      });
 
     // Clear existing collections
     console.log('Clearing existing collections...');
