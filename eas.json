@@ -14,13 +14,13 @@
         "buildType": "apk"
       },
       "env": {
-        "EXPO_PUBLIC_API_URL": "https://YOUR-BACKEND.onrender.com"
+        "EXPO_PUBLIC_API_URL": "https://dastaan-restaurant.vercel.app"
       }
     },
     "production": {
       "autoIncrement": true,
       "env": {
-        "EXPO_PUBLIC_API_URL": "https://YOUR-BACKEND.onrender.com"
+        "EXPO_PUBLIC_API_URL": "https://dastaan-restaurant.vercel.app"
       }
     },
     "apk": {
@@ -29,7 +29,7 @@
         "buildType": "apk"
       },
       "env": {
-        "EXPO_PUBLIC_API_URL": "https://YOUR-BACKEND.onrender.com"
+        "EXPO_PUBLIC_API_URL": "https://dastaan-restaurant.vercel.app"
       }
     }
   },
