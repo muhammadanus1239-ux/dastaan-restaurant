@@ -34,6 +34,16 @@ app.use(cors({
 }));
 app.use(express.json());
 
+// Wait for the DB connection before handling each request (needed on Vercel serverless)
+app.use(async (req, res, next) => {
+  try {
+    await connectDB();
+  } catch (e) {
+    console.error('DB not ready:', e.message);
+  }
+  next();
+});
+
 // Routes
 app.get('/health', (req, res) => {
   res.status(200).json({ status: 'ok' });
